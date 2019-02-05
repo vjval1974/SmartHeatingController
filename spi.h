@@ -1,0 +1,17 @@
+///////////////////////////////////////////////////////////////////////////////
+// Copyright (C) 2007, Brad Goold, All Rights Reserved.
+//
+// Authors: Brad Goold
+//
+// Date: 19 Mar 2009
+//
+///////////////////////////////////////////////////////////////////////////////
+
+#ifndef SPI_H
+#define SPI_H
+
+void SPI_MasterInit(void);
+void SPI_MasterTransmit(char cData);
+void SPI_74HC595_TX(char cData);
+
+#endif

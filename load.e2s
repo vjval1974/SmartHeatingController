@@ -1,0 +1,2 @@
+LOAD-PROG proto.hex
+WRITE-PROG

@@ -1,0 +1,24 @@
+{
+	"folders": [
+		{
+			"path": "."
+		}
+	],
+	"settings": {
+		"files.associations": {
+			"timercounter2.h": "c",
+			"eeprom.h": "c",
+			"rtc_routines.h": "c",
+			"uart_routines.h": "c",
+			"delay.h": "c",
+			"keypad.h": "c",
+			"interrupts.h": "c",
+			"eepromstruct.h": "c",
+			"autoprogram.h": "c",
+			"program.h": "c",
+			"io.h": "c",
+			"sfr_defs.h": "c",
+			"pgmspace.h": "c"
+		}
+	}
+}
