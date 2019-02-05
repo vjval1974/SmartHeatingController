@@ -51,16 +51,6 @@
 
 /*
 
-Wrote code to handle the PCF8574 IO expander module
-
-Rewritten the code for the interrupts so that it is generic and there
-is well commmented instructions on what to do etc as well as example code.
-
-Problem with the usart1 is that it conflicts with the interrupts int2 and 3.
-
-note: would like to test the operation of interrupts 4,5,6, and 7 also.
-
-
 Pins used (known):
 
 PORT A: all pins for keypad.
@@ -82,8 +72,6 @@ PORT G: Used for LCD
 //---------
 //Constants
 //---------
-
-
 const int PWM_FREQ = 7; //Hz
 const int PWM_PE3_STATE = ON;
 const int PWM_PE4_STATE = OFF;
