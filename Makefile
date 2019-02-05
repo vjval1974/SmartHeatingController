@@ -15,7 +15,6 @@ OBJS = main.o \
 	 i2c_routines.o \
 	 keypad.o \
 	 Interrupts.o \
-	 PCF_routines.o  \
 	 timer.o  \
 	 adc.o   \
 	 pwm.o \

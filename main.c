@@ -78,23 +78,23 @@ const int PWM_PE4_STATE = OFF;
 const int PWM_PE5_STATE = OFF;
 
 
-Program program = 
-{
-    0, 
-    "Program 1",
+// Program program = 
+// {
+//     0, 
+//     "Program 1",
         
-    {
-        //ID    ProgID  PwmPct  Time    Name        Elapsed
-        { 1,    1,      10,     1,     "Step1",     0 },
-        { 2,    1,      20,     2,     "Step2",     0 },
-        { 3,    1,      30,     5,     "Step3",     0 },
-        { 4,    1,      40,     8,     "Step4",     0 },
-        { 5,    1,      50,     2,     "Step5",     0 }
-    },
-    pwm_set_A, 
-    PollProgram,  
-    0,
-};
+//     {
+//         //ID    ProgID  PwmPct  Time    Name        Elapsed
+//         { 1,    1,      10,     1,     "Step1",     0 },
+//         { 2,    1,      20,     2,     "Step2",     0 },
+//         { 3,    1,      30,     5,     "Step3",     0 },
+//         { 4,    1,      40,     8,     "Step4",     0 },
+//         { 5,    1,      50,     2,     "Step5",     0 }
+//     },
+//     pwm_set_A, 
+//     PollProgram,  
+//     0,
+// };
     
 
 
@@ -118,26 +118,15 @@ void main_key(char key);
 //===================
 //FUNCTION PROTOTYPES
 //===================
-
-
-//uint8_t EEMEM saved_pwm_pct = 0;
-//char EEMEM test[10] = "ABCDEFG";
-volatile uint8_t current_pwm_pct = 0;
-
 //--------------------------------------
 // Display message upon return from main
 //--------------------------------------
 void exit_message()
     __attribute__((naked))
     __attribute__((section(".fini8")));
-
-//---------------------------
-// Display MCUCSR to the lcd
-//---------------------------
-void display_mcucsr_lcd(void);
 //-------------------------------------------------------
 
-//Program program;
+Program program;
 //==================================================================
 //------------
 //Main Program
@@ -191,6 +180,8 @@ int main(void)
     displayLastResetCause(printf);
     
     printlcd(1, 1, "Initializing...");
+    program = NullProgram;
+
     init(pwm_set_A, PollProgram);
     
 
@@ -200,7 +191,6 @@ int main(void)
     init_pwm(PWM_FREQ, PWM_PE3_STATE, PWM_PE4_STATE, PWM_PE5_STATE);
     programSelectionDisplay(0);
     sei();
-    program = NullProgram;
     //GetProgramsAndTranslate(programs);
    
     // InitApplet(&MainApplet);
@@ -234,7 +224,9 @@ int main(void)
 
             g_key_handler(key);
         }
-        delay_ms(200);
+        delay_ms(200); // really this should be driven by an interrupt on a keypress
+
+        // TEST CODE 
         // uint16_t key_now = timer_get();
         // static uint16_t key_last;
 
@@ -264,10 +256,7 @@ int main(void)
 
         //     timeLast = timeNow;
         // }
-        // if (timeNow % 59 == 0)
-        // {
-        //    // eeprom_write_byte(&saved_pwm_pct, current_pwm_pct);
-        // }
+      
 
         wdt_reset(); //Clear the WatchDog timer flag
     }

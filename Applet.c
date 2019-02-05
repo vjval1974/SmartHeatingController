@@ -23,13 +23,11 @@
 #include "i2c_routines.h"
 #include "keypad.h"
 #include "Interrupts.h"
-#include "timercounter3.h"
 #include "timer.h"
 #include "adc.h"
 #include "spi.h"
 #include <math.h>
 #include <limits.h>
-#include "timercounter2.h"
 #include "pwm.h"
 #include "Applet.h"
 
