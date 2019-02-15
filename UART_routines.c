@@ -15,7 +15,7 @@
 #include <avr/interrupt.h>
 #include <string.h>
 
-volatile char index; 
+volatile uint8_t idx; 
 volatile char rxbuf[BUFFER_SIZE];
 volatile char line[BUFFER_SIZE];
 volatile char lineAvailable;
@@ -39,29 +39,29 @@ ISR(USART1_RX_vect)
     if (!bit_is_clear(UCSR1A, FE))
         return;
     
-    if (index < sizeof(rxbuf) - 2)
+    if (idx < sizeof(rxbuf) - 2)
     {
-        rxbuf[index++] = c;
-        rxbuf[index]   = 0;
+        rxbuf[idx++] = c;
+        rxbuf[idx]   = 0;
         //uart_putchar(c, NULL);
     }
 
-    if ((c == '\n' || c == '\r') && index > 1)
+    if ((c == '\n' || c == '\r') && idx > 1)
     {
 
-        strcpy(line, rxbuf);
+        strcpy((char *)line, (char *)rxbuf);
         lineAvailable = 1;
         clr_rxbuf();
-        index = 0;
+        idx = 0;
     }
     // else if (c == '\b') // backspace
     // {
-    //     if (index > 1) // we just added \b to rxbuf above
+    //     if (idx > 1) // we just added \b to rxbuf above
     //     {
     //         uart_putc(' ');
     //         uart_putc('\b');
-    //         index -= 2; // skip \b we just added and cahr before that
-    //         rxbuf[index] = 0;
+    //         idx -= 2; // skip \b we just added and cahr before that
+    //         rxbuf[idx] = 0;
     //     }
     // }
         
@@ -76,7 +76,7 @@ char uart_get_last_line(char * dest)
     
    // cli();
     
-    strlcpy(dest, line, sizeof(line));
+    strlcpy((char *)dest, (char *)line, sizeof(line));
     //printf("dest is %s ", dest );
     lineAvailable = 0;
     

@@ -1,7 +1,9 @@
 #include <avr/eeprom.h>
+#include <assert.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <stddef.h>
+#include <string.h>
 #include <avr/pgmspace.h>
 #include "util.h"
 #include "delay.h"
@@ -10,6 +12,7 @@
 #include "Program.h"
 #include "AutoProgram.h"
 #include "pwm.h"
+#include "menu.h"
 
 
 void clearValues();
@@ -99,12 +102,78 @@ Program prog4 EEMEM =
 
 Program * eepromPrograms[4];
 
+Program * selectedProgram;
+static char  programNames[4][20];
+
+void GetProgramNames()
+{
+    for (int i = 0; i < 4; i ++)
+    {
+        for(uint8_t j = 0; j < 19; j++)
+        {
+            programNames[i][j] = 0x20;
+        }
+        programNames[i][19] = '\0';
+        eeprom_read_block(programNames[i], eepromPrograms[i]->Name, strlen(programNames[i]));
+    }
+
+}
+
+void SetMenuNames(struct menu * menu)
+{
+    int ii = 0; 
+    while(menu[ii].display_text != NULL & programNames[ii] != NULL)
+    {
+        menu[ii].display_text = programNames[ii];
+        ii++;
+    }
+    
+
+}
+
+void printProgramNames()
+{
+    for (int i = 0; i < 4; i ++)
+    {
+        printf("Program %d: %s\r\n", i+1, programNames[i]);
+    }
+    
+}
+
+uint8_t selectedProgramIndex = 255; 
+void programSelectionKeyHandler(uint8_t key)
+{
+    printf(PSTR("Main Key Handler - KeyPress Detected\r\n"));
+    printGlobalValues();
+    switch (key)
+    {
+        case 1:
+            printf(PSTR("KH changing from Main to programSelectionKey\r\n"));
+            printf(PSTR("Press value 1-4 to select program\r\n"));
+            printf(PSTR("Press # to submit\r\n"));
+           // program = 0;
+           // g_key_handler = programSelectionKey;
+            programSelectionDisplay(0);
+            break;
+    
+        default:
+            break;
+    }
+}
+
+
+
+void GetProgramFromEeprom(uint8_t index)
+{
+    assert(index >= 0 && index < 4);
+    
+    eeprom_read_block(selectedProgram, eepromPrograms[index], sizeof(Program));
+
+}
+
 void LoadProgramsFromEeprom(Program * programs[4]) //todo: This may not work!!
 {
-    eepromPrograms[0] = &prog1;
-    eepromPrograms[1] = &prog2;
-    eepromPrograms[2] = &prog3;
-    eepromPrograms[3] = &prog4;
+    
     delay_ms(10);
     printf(PSTR("Loading programs from EEPROM\r\n"));
     eeprom_read_block(programs[0], &prog1, sizeof(Program));
@@ -118,14 +187,24 @@ void LoadProgramsFromEeprom(Program * programs[4]) //todo: This may not work!!
 void init( void(*pwmSetterFunc)(char state, char pct), 	void(*pollingFunc)())
 {
     printf(PSTR("Allocating space for programs\r\n"));
+    eepromPrograms[0] = &prog1;
+    eepromPrograms[1] = &prog2;
+    eepromPrograms[2] = &prog3;
+    eepromPrograms[3] = &prog4;
 
-    for(uint8_t i = 0; i < 4; i++)
-    {
-        programs[i] = calloc(1, sizeof(Program));
-        programs[i]->pollingFunc = pollingFunc;
-        programs[i]->pwmSetterFunc = pwmSetterFunc;
-    }
-    LoadProgramsFromEeprom(programs);
+    selectedProgram = calloc(1, sizeof(Program));
+    selectedProgram->pollingFunc = pollingFunc;
+    selectedProgram->pwmSetterFunc = pwmSetterFunc;
+    GetProgramNames();
+
+
+    // for(uint8_t i = 0; i < 4; i++)
+    // {
+    //     programs[i] = calloc(1, sizeof(Program));
+    //     programs[i]->pollingFunc = pollingFunc;
+    //     programs[i]->pwmSetterFunc = pwmSetterFunc;
+    // }
+    //  LoadProgramsFromEeprom(programs);
     
 }
 

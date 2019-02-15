@@ -10,10 +10,12 @@
 #define EEPROMSTRUCT_H
 #include <stdint.h>
 #include "Program.h"
+#include "menu.h"
 
 void UploadProgramToEeprom(Program * program);
 void UploadProgramsToEeprom(Program * programs[4]);
 void LoadProgramsFromEeprom(Program * programs[4]);
 void init( void(*pwmSetterFunc)(char state, char pct), 	void(*pollingFunc)());
+void SetMenuNames(struct menu * menu);
 
 #endif

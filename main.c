@@ -11,6 +11,11 @@
 #define __AVR_ATmega128__
 #endif
 
+#ifndef __ASSERT_USE_STDERR
+#define __ASSERT_USE_STDERR
+#endif
+
+
 // #if defined __AVR_ATmega128__
 // #include <avr/iom128.h>
 // #endif 
@@ -48,6 +53,7 @@
 #include "eepromStruct.h"
 #include "console.h"
 #include "i2c_routines.h"
+#include "menu.h"
 
 
 /*
@@ -96,14 +102,39 @@ const int PWM_PE5_STATE = OFF;
 //     PollProgram,  
 //     0,
 // };
+
+struct menu diag_menu[] =
+{
+//  (Text)       (*next)          (*func)              (*key handler)
+    {"??",     NULL,           NULL,                NULL},
+    {"??",       NULL,           NULL,                NULL},
+    {"??",       NULL,           NULL,                NULL},
+    {"??",       NULL,           NULL,                NULL},
+    {NULL,          NULL,           NULL,                NULL}
     
+};
+
+
+
+
+
+struct menu main_menu[] =
+{
+//  (Text)       (*next)          (*func)              (*key handler)
+    {"Setup",     NULL,           NULL,                NULL},
+    {"Manual",       NULL,           NULL,                NULL},
+    {"Auto",       NULL,           NULL,                NULL},
+    {"Diag",       diag_menu,           NULL,                NULL},
+    {NULL,          NULL,           NULL,                NULL}
+    
+};
 
 
     
 //----------
 //Prototypes
 //----------
-
+static char shouldUpdateTime();
 
 
 
@@ -126,6 +157,14 @@ void exit_message()
     __attribute__((naked))
     __attribute__((section(".fini8")));
 //-------------------------------------------------------
+
+static void (*g_poll_func)(void);
+
+void set_poll_func(void (*func)(void))
+{
+    g_poll_func = func;
+}
+
 
 Program program;
 //==================================================================
@@ -155,13 +194,7 @@ int main(void)
     delay_ms(50);
 
     //Initialisation of peripherals
-    lcd_init(); //HD44780U LCD
-    #ifndef DONT_USE_LCD
-    printlcd(1, 1, "LCD OK");
-    printf("LCD OK...\r\n");
-    delay_ms(500);    
-    lcd_clrscr();
-    #endif
+   
       
     init_interrupts();
     printf("Interrupts configured...\r\n");
@@ -171,8 +204,12 @@ int main(void)
     adc_init(ADC_CHAN_0);
     printf("ADC channel 0 configured...\r\n");
     twi_init();
-    // RTC_updateTime();
-    // RTC_updateDate();
+    if (shouldUpdateTime())
+    {
+        RTC_updateTime();
+        RTC_updateDate();
+    }
+    
     printf("I2C comms configured...\r\n");
     printf("trying RTC...\r\n");
     RTC_displayDate();
@@ -181,14 +218,27 @@ int main(void)
     fflush(stdout);
     displayLastResetCause(printf);
     
-    printlcd(1, 1, "Initializing...");
+   // printlcd(1, 1, "Initializing...");
     program = NullProgram;
+    g_poll_func = NULL;
 
     init(pwm_set_A, PollProgram);
+
+    lcd_init(); //HD44780U LCD
+    #ifndef DONT_USE_LCD
+    printlcd(1, 1, "LCD OK");
+    printf("LCD OK...\r\n");
+    delay_ms(500);    
+    lcd_clrscr();
+    menu_set_root(main_menu);  
     
+    //sprintf(diag_menu[0].display_text, "ASDF");
 
+    SetMenuNames(&diag_menu);
+    #endif
 
-    g_key_handler = mainKey;
+    g_key_handler = menu_key;
+
     
     init_pwm(PWM_FREQ, PWM_PE3_STATE, PWM_PE4_STATE, PWM_PE5_STATE);
     programSelectionDisplay(0);
@@ -232,6 +282,9 @@ int main(void)
         }
 
         // delay_ms(200); // really this should be driven by an interrupt on a keypress
+
+        if (g_poll_func)
+            g_poll_func();
 
         // TEST CODE 
         // uint16_t key_now = timer_get();
@@ -316,3 +369,20 @@ void exit_message(void)
 //eeprom_read_block(&st, &someText, sizeof(someText));
 // printlcd(4, 1," %s ", st);
 //    delay_ms(10000);
+
+static char shouldUpdateTime()
+{
+    static char cycles = 0;
+     while (cycles++ <= 10)
+    {
+        uint8_t key = keys_get();
+
+        if (key != 255)
+        {
+            if (key == 1)
+            return 1;
+        }
+        delay_ms(200); 
+    }
+    return 0;
+}
