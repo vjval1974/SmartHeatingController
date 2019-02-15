@@ -19,7 +19,8 @@
 			"io.h": "c",
 			"sfr_defs.h": "c",
 			"pgmspace.h": "c",
-			"stdio.h": "c"
+			"stdio.h": "c",
+			"i2c_routines.h": "c"
 		}
 	}
 }

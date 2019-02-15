@@ -54,6 +54,7 @@
 #include "console.h"
 #include "i2c_routines.h"
 #include "menu.h"
+#include "ManualControl.h"
 
 
 /*
@@ -122,7 +123,7 @@ struct menu main_menu[] =
 {
 //  (Text)       (*next)          (*func)              (*key handler)
     {"Setup",     NULL,           NULL,                NULL},
-    {"Manual",       NULL,           NULL,                NULL},
+    {"Manual",       NULL,           UpdateDisplay,                ManualControl_key},
     {"Auto",       NULL,           NULL,                NULL},
     {"Diag",       diag_menu,           NULL,                NULL},
     {NULL,          NULL,           NULL,                NULL}
@@ -276,7 +277,7 @@ int main(void)
 
         if (key != 255)
         {
-            printf("Keyreturned = %d\r\n", key);
+            //printf("Keyreturned = %d\r\n", key);
 
             g_key_handler(key);
         }

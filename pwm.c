@@ -33,6 +33,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include "hd44780_settings.h"
 #include "pwm.h"
 
 volatile long unsigned top = 0;
@@ -133,7 +134,7 @@ void pwm_set_C(char state, char pct){
     OCR3C = x;
 }
 
-void pctToBar(uint8_t pct, char row[16])
+void pctToBar(uint8_t pct, char row[LCD_DISPLAY_CHARS])
 {
     int numCells = (pct * TOTALCELLS) / 100;
 

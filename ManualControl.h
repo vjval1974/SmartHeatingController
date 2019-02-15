@@ -1,0 +1,16 @@
+///////////////////////////////////////////////////////////////////////////////
+// Copyright (C) 2019, Brad Goold, All Rights Reserved.
+//
+// Authors: Brad Goold
+//
+// Date: 15 Feb 2019
+//
+///////////////////////////////////////////////////////////////////////////////
+
+#ifndef MANUALCONTROL_H
+#define MANUALCONTROL_H
+
+void ManualControl_applet();
+void ManualControl_key(unsigned char key);
+void UpdateDisplay();
+#endif

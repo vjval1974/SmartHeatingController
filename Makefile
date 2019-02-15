@@ -26,7 +26,8 @@ OBJS = main.o \
 	 console.o \
 	 ds1820.o \
 	 Program.o \
-	 menu.o
+	 menu.o \
+	 ManualControl.o
 
 #-------------------
 all: proto.hex
