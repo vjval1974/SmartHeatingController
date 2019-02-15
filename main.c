@@ -37,6 +37,7 @@
 #include "keypad.h"
 #include "Interrupts.h"
 #include "timer.h"
+#include "timer2.h"
 #include "adc.h"
 #include <math.h>
 #include <limits.h>
@@ -165,6 +166,7 @@ int main(void)
     init_interrupts();
     printf("Interrupts configured...\r\n");
     timer_init();
+    timer2_init();
     printf("Basic timer configured...\r\n");
     adc_init(ADC_CHAN_0);
     printf("ADC channel 0 configured...\r\n");
@@ -216,7 +218,11 @@ int main(void)
         //handle keys
         //-----------
         //uint8_t key = getKey(); // use this when taking keys from USART
-        uint8_t key = keys_get();
+        
+        uint8_t key = getKey(); // timer 2 overflows and allows keys to be retrieved 7 times a second. 
+
+
+        // uint8_t key = keys_get();
 
         if (key != 255)
         {
@@ -224,7 +230,8 @@ int main(void)
 
             g_key_handler(key);
         }
-        delay_ms(200); // really this should be driven by an interrupt on a keypress
+
+        // delay_ms(200); // really this should be driven by an interrupt on a keypress
 
         // TEST CODE 
         // uint16_t key_now = timer_get();

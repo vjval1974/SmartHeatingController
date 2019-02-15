@@ -18,7 +18,7 @@ static void clr_line(void)
     
 }
 
-uint8_t getKey(void)
+uint8_t getConsoleKey(void)
 {
 
     uint8_t key = 255;

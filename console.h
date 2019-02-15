@@ -10,6 +10,6 @@
 #define CONSOLE_H
 #include <stdint.h>
 
-uint8_t getKey(void);
+uint8_t getConsoleKey(void);
 
 #endif

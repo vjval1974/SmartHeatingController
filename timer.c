@@ -19,6 +19,8 @@ TIMSK |= _BV(TOIE1);
 TCNT1 = 0;
 }
 
+
+
 uint32_t timer_get(void)
 {
 return g_ticks;

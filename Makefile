@@ -16,6 +16,7 @@ OBJS = main.o \
 	 keypad.o \
 	 Interrupts.o \
 	 timer.o  \
+	 timer2.o \
 	 adc.o   \
 	 pwm.o \
 	 AutoProgram.o \
