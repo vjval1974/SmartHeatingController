@@ -21,8 +21,7 @@
         {
             "label": "clean",
             "type": "shell",
-            "command": "make clean",
-            
+            "command": "make clean"
         },
         {
             "label": "Build",
@@ -31,7 +30,8 @@
             "group": {
                 "kind": "build",
                 "isDefault": true
-            }
+            },
+            "problemMatcher": []
         }
     ]
 }

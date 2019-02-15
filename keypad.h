@@ -15,6 +15,14 @@
 #define KEY_HELP   0x0E
 #define KEY_MENU   0x0D
 #define KEY_ESC   0x0C
+
+#define BUTTON_UP 2
+#define BUTTON_DOWN 8
+#define BUTTON_LEFT 4
+#define BUTTON_RIGHT 6
+#define BUTTON_SUBMIT 0x0A
+#define BUTTON_CANCEL 0x0B
+
 unsigned char keys_get(void);
 
 #endif

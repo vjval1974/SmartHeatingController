@@ -18,7 +18,8 @@
 			"program.h": "c",
 			"io.h": "c",
 			"sfr_defs.h": "c",
-			"pgmspace.h": "c"
+			"pgmspace.h": "c",
+			"stdio.h": "c"
 		}
 	}
 }

@@ -9,8 +9,10 @@ Version:   1.11
 #include "/usr/lib/avr/include/avr/pgmspace.h"
 #include <avr/io.h>
 #include <stdio.h>
+#include <string.h>
 #if (USE_ADELAY_LIBRARY==1)
   #include "delay.h"
+  #include "timer.h"
 #else
   #define Delay_ns(__ns) \
     if((unsigned long) (F_CPU/1000000000.0 * __ns) != F_CPU/1000000000.0 * __ns)\
@@ -797,3 +799,53 @@ void lcd_use_display(int ADisplay)
   }
 #endif
 
+  unsigned char printlcd_scroll_poll(uint8_t lcdLine, char *text)
+  {
+
+    int length = strlen(text);        //length of the passed in string
+    int ii = 0;                       //iterative counter
+    static int cnt = 0;               //offset counter
+    char line[LCD_DISPLAY_CHARS + 1]; //location of string to display
+    uint32_t time_now = timer_get();  //time variable
+    static uint32_t time_last = 0;    //for remembering the last time
+
+    //initialise our string.
+    for (ii = 0; ii < LCD_DISPLAY_CHARS + 1; ii++)
+      line[ii] = 0;
+
+    //every 2thirds of a second we will shift right on the array
+    if (time_now - time_last > _THIRD_SECONDS_IN_TICKS(2))
+    {
+      //we only want to print so we fill the line at
+      //the end of the string
+      if (cnt < length) //-LCD_DISPLAY_CHARS+1)
+      {
+        strncpy(line, &text[cnt], LCD_DISPLAY_CHARS); //copy our window
+                                                      //printlcd_var(1, 0, strlen(line));
+        if (strlen(line) < LCD_DISPLAY_CHARS)
+        {
+          for (ii = 0; ii < (LCD_DISPLAY_CHARS - strlen(line)); ii++)
+          {
+            strcat(line, " ");
+          }
+        }
+        line[strlen(line)] = '\0';  //add the null terminator
+        printlcd(lcdLine, 0, line); //display our text
+       
+        cnt++;                      //increase our offset counter
+      }
+      //if the line is too short we print it now
+
+      else
+
+      {
+
+        strncpy(line, &text[0], LCD_DISPLAY_CHARS);
+        printlcd(lcdLine, 0, line);
+        cnt = 0;              //reset the counter so we continouosly loop
+      }
+      time_last = time_now; //reset the timer
+    }
+
+    return 0;
+  }

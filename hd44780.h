@@ -11,7 +11,7 @@ Version:   1.11
 #include "inttypes.h"
 
 // in case we dont want to use LCD calls
-#define DONT_USE_LCD
+//#define DONT_USE_LCD
 
 //LCD Constants for HD44780
 #define LCD_CLR                 0    // DB0: clear display

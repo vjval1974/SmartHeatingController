@@ -24,7 +24,8 @@ OBJS = main.o \
 	 mcucsr.o \
 	 console.o \
 	 ds1820.o \
-	 Program.o
+	 Program.o \
+	 menu.o
 
 #-------------------
 all: proto.hex
